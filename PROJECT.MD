@@ -1,8 +1,10 @@
-# ProjectDock
+# OpenDock
 
 Open-source project dock / launcher inspired by [Dockset](https://dockset.app/?v=0.2.2) — profiles and widgets scoped to OSS projects.
 
 **License:** MIT (intended for this repository).
+
+**Repository:** `JitseLambrichts/opendock`
 
 ---
 
@@ -21,7 +23,7 @@ Dockset widgets lean personal and commercial: Stock, Calendar, Reminders, Now Pl
 
 ### What we build
 
-**ProjectDock** reuses the *idea* (named profiles + pinned tiles + light status widgets), but aims it at **open-source projects**:
+**OpenDock** reuses the *idea* (named profiles + pinned tiles + light status widgets), but aims it at **open-source projects**:
 
 - Profiles are **per repo / project**, not per macOS Focus or lifestyle context
 - Tiles are things OSS people live in: paths, GitHub issues/PRs, CI, docs, Discord/Matrix, scripts
@@ -75,9 +77,9 @@ Source: Dockset marketing / product surface around **v0.2.2** ([dockset.app](htt
 
 ---
 
-## 4. Feature matrix: Dockset → ProjectDock (OSS)
+## 4. Feature matrix: Dockset → OpenDock (OSS)
 
-| Dockset | ProjectDock (planned) |
+| Dockset | OpenDock (planned) |
 |---------|------------------------|
 | Native Dock profiles | Optional later; **not** v1 must-have |
 | Custom Dock | Primary surface: **project dock** |
@@ -101,7 +103,7 @@ Source: Dockset marketing / product surface around **v0.2.2** ([dockset.app](htt
 1. **No** pixel-perfect macOS Dock / Liquid Glass remake  
 2. **No** Stripe, Shopify, Paddle, or other commerce dashboards as first-class widgets  
 3. **No** paid license server, seat management, or required cloud account  
-4. **No** claim that ProjectDock replaces GitHub, your IDE, or your terminal  
+4. **No** claim that OpenDock replaces GitHub, your IDE, or your terminal  
 5. **No** “download any random SaaS widget pack” product — profiles stay project-scoped and portable
 
 ---
@@ -116,10 +118,10 @@ Source: Dockset marketing / product surface around **v0.2.2** ([dockset.app](htt
 
 ## 7. Definition of done for *this* bootstrap
 
-- Public repo under `JitseLambrichts` with this `PROJECT.MD`
+- Public repo `JitseLambrichts/opendock` with this `PROJECT.MD`
 - Vision, Dockset reference, v1 scope, feature matrix, and non-goals are written down
 - No application scaffold yet
 
 ---
 
-*Inspired by Dockset; ProjectDock is an independent open-source direction, not affiliated with Dockset.*
+*Inspired by Dockset; OpenDock is an independent open-source direction, not affiliated with Dockset.*
