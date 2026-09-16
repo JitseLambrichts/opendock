@@ -1,6 +1,7 @@
 import OpenDockCore
 import SwiftUI
 
+@MainActor
 struct DockPanelView: View {
     let profile: Profile?
     let onOpen: (Tile) -> Void

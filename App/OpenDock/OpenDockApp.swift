@@ -2,6 +2,7 @@ import AppKit
 import SwiftUI
 
 @main
+@MainActor
 struct OpenDockApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @State private var session: LibrarySession
@@ -29,6 +30,7 @@ struct OpenDockApp: App {
     }
 }
 
+@MainActor
 private struct MenuBarLabel: View {
     @Environment(\.openWindow) private var openWindow
     var session: LibrarySession

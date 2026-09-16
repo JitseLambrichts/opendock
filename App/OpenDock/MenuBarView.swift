@@ -2,6 +2,7 @@ import AppKit
 import OpenDockCore
 import SwiftUI
 
+@MainActor
 struct MenuBarView: View {
     @Environment(\.openWindow) private var openWindow
     var session: LibrarySession

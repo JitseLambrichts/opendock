@@ -1,6 +1,7 @@
 import OpenDockCore
 import SwiftUI
 
+@MainActor
 struct EditorView: View {
     var session: LibrarySession
     @State private var selectedProfileID: UUID?
