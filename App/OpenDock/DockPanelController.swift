@@ -7,21 +7,54 @@ final class DockPanelController {
     private let session: LibrarySession
     private var panel: DockPanel?
     private var hostingView: FirstMouseHostingView<DockPanelView>?
+    private var localMonitor: Any?
+    private var globalMonitor: Any?
+    private var hideTask: Task<Void, Never>?
+    private var screenObserver: NSObjectProtocol?
+    private var didInstall = false
+    private var isRevealed = false
+    /// Menu-bar “Show Dock” keeps the panel up until the pointer actually enters it.
+    private var isPinned = false
+
+    private static let hitZoneHeight: CGFloat = 12
+    private static let hideDelayNanoseconds: UInt64 = 400_000_000
 
     init(session: LibrarySession) {
         self.session = session
     }
 
-    func show() {
-        if panel == nil {
+    /// Creates the panel (hidden) and starts edge hover tracking. Does not reveal.
+    func install() {
+        if !didInstall {
+            didInstall = true
             makePanel()
+            startMouseMonitors()
+            screenObserver = NotificationCenter.default.addObserver(
+                forName: NSApplication.didChangeScreenParametersNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                Task { @MainActor in
+                    self?.refresh()
+                }
+            }
         }
         refresh()
-        panel?.orderFrontRegardless()
+        conceal(animated: false)
+        updateForMouseLocation()
         Task { @MainActor in
             try? await Task.sleep(nanoseconds: 300_000_000)
             writeSnapshotIfRequested()
         }
+    }
+
+    /// Force the dock on screen. Autohide arms after the pointer enters the panel.
+    func show() {
+        if panel == nil {
+            makePanel()
+        }
+        isPinned = true
+        reveal()
     }
 
     func writeSnapshot(to url: URL) {
@@ -71,6 +104,9 @@ final class DockPanelController {
         let size = Self.size(for: session.activeProfile)
         hostingView.frame = NSRect(origin: .zero, size: size)
         position(panel, size: size)
+        if !isRevealed {
+            panel.orderOut(nil)
+        }
     }
 
     private func makePanel() {
@@ -108,6 +144,99 @@ final class DockPanelController {
 
         self.panel = panel
         self.hostingView = hosting
+        position(panel, size: size)
+        panel.orderOut(nil)
+    }
+
+    private func startMouseMonitors() {
+        if localMonitor == nil {
+            localMonitor = NSEvent.addLocalMonitorForEvents(
+                matching: [.mouseMoved, .leftMouseDragged, .leftMouseDown]
+            ) { [weak self] event in
+                DispatchQueue.main.async {
+                    self?.updateForMouseLocation()
+                }
+                return event
+            }
+        }
+        if globalMonitor == nil {
+            globalMonitor = NSEvent.addGlobalMonitorForEvents(
+                matching: [.mouseMoved, .leftMouseDragged]
+            ) { [weak self] _ in
+                DispatchQueue.main.async {
+                    self?.updateForMouseLocation()
+                }
+            }
+        }
+    }
+
+    private func updateForMouseLocation() {
+        if isPointerInDockPanel() {
+            isPinned = false
+            reveal()
+            return
+        }
+        if isPointerInHitZone() {
+            reveal()
+            return
+        }
+        scheduleHide()
+    }
+
+    private func isPointerInHitZone() -> Bool {
+        Self.hitZoneFrame().contains(NSEvent.mouseLocation)
+    }
+
+    private func isPointerInDockPanel() -> Bool {
+        guard isRevealed, let panel else { return false }
+        return panel.frame.insetBy(dx: -10, dy: -10).contains(NSEvent.mouseLocation)
+    }
+
+    private func reveal() {
+        hideTask?.cancel()
+        hideTask = nil
+        if panel == nil {
+            makePanel()
+        }
+        isRevealed = true
+        refresh()
+        panel?.alphaValue = 1
+        panel?.orderFrontRegardless()
+    }
+
+    private func scheduleHide() {
+        guard !isPinned else { return }
+        hideTask?.cancel()
+        hideTask = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: Self.hideDelayNanoseconds)
+            guard !Task.isCancelled else { return }
+            guard !isPinned else { return }
+            guard !isPointerInHitZone(), !isPointerInDockPanel() else { return }
+            conceal(animated: true)
+        }
+    }
+
+    private func conceal(animated: Bool) {
+        hideTask?.cancel()
+        hideTask = nil
+        isRevealed = false
+        isPinned = false
+        guard let panel else { return }
+        if animated {
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0.15
+                panel.animator().alphaValue = 0
+            } completionHandler: { [weak self] in
+                Task { @MainActor in
+                    guard self?.isRevealed == false else { return }
+                    panel.orderOut(nil)
+                    panel.alphaValue = 1
+                }
+            }
+        } else {
+            panel.orderOut(nil)
+            panel.alphaValue = 1
+        }
     }
 
     private func position(_ panel: NSPanel, size: NSSize) {
@@ -116,6 +245,17 @@ final class DockPanelController {
         let x = visible.midX - size.width / 2
         let y = visible.minY + 16
         panel.setFrame(NSRect(x: x, y: y, width: size.width, height: size.height), display: true)
+    }
+
+    static func hitZoneFrame() -> NSRect {
+        guard let screen = NSScreen.main ?? NSScreen.screens.first else { return .zero }
+        let visible = screen.visibleFrame
+        return NSRect(
+            x: visible.minX,
+            y: visible.minY,
+            width: visible.width,
+            height: hitZoneHeight
+        )
     }
 
     static func size(for profile: Profile?) -> NSSize {

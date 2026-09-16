@@ -28,7 +28,8 @@ Open `App/OpenDock.xcodeproj` in Xcode, select the **OpenDock** scheme, and Run 
 From the menu bar extra:
 
 - Click a profile to make it active (checkmark)
-- **Show Dock** to bring the floating panel forward
+- **Show Dock** to pin the floating panel on screen (it autohides after the pointer leaves)
+- Hover the bottom of the screen to show the dock; move away to hide it
 - Add or remove profiles and tiles (link, path, spacer), or **Edit Library…**
 - **Quit OpenDock**
 

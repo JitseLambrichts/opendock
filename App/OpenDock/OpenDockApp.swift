@@ -39,7 +39,7 @@ private struct MenuBarLabel: View {
     var body: some View {
         Label("OpenDock", systemImage: "dock.rectangle")
             .onAppear {
-                panelController.show()
+                panelController.install()
                 if ProcessInfo.processInfo.environment["OPENDOCK_OPEN_EDITOR"] == "1" {
                     NSApp.activate()
                     openWindow(id: EditorWindow.id)
