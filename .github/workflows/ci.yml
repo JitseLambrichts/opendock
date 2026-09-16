@@ -24,7 +24,7 @@ jobs:
         run: swift test
 
   macos:
-    name: Swift tests (macOS)
+    name: Tests and app (macOS)
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
@@ -32,7 +32,15 @@ jobs:
       - name: Show Swift version
         run: swift --version
 
-      # Package tests only. The Xcode app is a follow-up; do not xcodebuild
-      # or fail this job if App/OpenDock.xcodeproj is missing.
-      - name: Run tests
+      - name: Run package tests
         run: swift test
+
+      - name: Build macOS app
+        run: |
+          xcodebuild \
+            -project App/OpenDock.xcodeproj \
+            -scheme OpenDock \
+            -configuration Debug \
+            -destination 'generic/platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            build

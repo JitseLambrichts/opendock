@@ -112,7 +112,7 @@ Source: Dockset marketing / product surface around **v0.2.2** ([dockset.app](htt
 
 - Host platform for v1 is **native macOS 14+**, Swift + SwiftUI. `OpenDockCore` is **Foundation-only** (no AppKit/SwiftUI) so models and storage build and test on Linux CI as well as on a Mac.
 - GitHub is the default forge for status tiles; other forges can follow the same tile model.
-- The SwiftUI app shell is a follow-up on the same milestone; this repository currently ships the core Swift package, unit tests, and CI — not the app UI.
+- The SwiftUI menu-bar app lives in `App/OpenDock.xcodeproj` and depends on the local `OpenDockCore` package. Script runners, live CI widgets, and global keyboard shortcuts are still later.
 
 ---
 
@@ -122,8 +122,8 @@ Source: Dockset marketing / product surface around **v0.2.2** ([dockset.app](htt
 - Vision, Dockset reference, v1 scope, feature matrix, and non-goals are written down
 - Swift package with library target `OpenDockCore` and test target `OpenDockCoreTests`
 - Unit tests cover Codable round-trip, seed-on-missing-file, profile/tile mutations, and atomic persist
-- GitHub Actions runs `swift test` on Ubuntu (installing Swift) and on macOS; a missing Xcode project does not fail CI
-- SwiftUI / Xcode app UI is **not** claimed done here; it follows on the same milestone
+- GitHub Actions runs `swift test` on Ubuntu (installing Swift) and on macOS, and `xcodebuild`s `App/OpenDock.xcodeproj` on macOS
+- Menu-bar accessory app: switch profiles, floating dock panel, open link/path tiles, add/remove profiles and tiles without editing JSON by hand
 
 ---
 

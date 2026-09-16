@@ -19,10 +19,11 @@ DerivedData/
 timeline.xctimeline
 playground.xcworkspace
 
-# Ignore generated Xcode project metadata, keep shared project files if added later
+# Ignore generated Xcode project metadata, keep shared project files
 *.xcodeproj/*
 !*.xcodeproj/project.pbxproj
 !*.xcodeproj/xcshareddata/
+!*.xcodeproj/xcshareddata/**
 !*.xcodeproj/project.xcworkspace/
 !*.xcodeproj/project.xcworkspace/contents.xcworkspacedata
 
