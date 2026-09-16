@@ -34,7 +34,7 @@ final class DockPanelController {
                 object: nil,
                 queue: .main
             ) { [weak self] _ in
-                Task { @MainActor in
+                Task { @MainActor [weak self] in
                     self?.refresh()
                 }
             }
@@ -153,7 +153,7 @@ final class DockPanelController {
             localMonitor = NSEvent.addLocalMonitorForEvents(
                 matching: [.mouseMoved, .leftMouseDragged, .leftMouseDown]
             ) { [weak self] event in
-                DispatchQueue.main.async {
+                Task { @MainActor [weak self] in
                     self?.updateForMouseLocation()
                 }
                 return event
@@ -163,7 +163,7 @@ final class DockPanelController {
             globalMonitor = NSEvent.addGlobalMonitorForEvents(
                 matching: [.mouseMoved, .leftMouseDragged]
             ) { [weak self] _ in
-                DispatchQueue.main.async {
+                Task { @MainActor [weak self] in
                     self?.updateForMouseLocation()
                 }
             }
@@ -227,7 +227,7 @@ final class DockPanelController {
                 context.duration = 0.15
                 panel.animator().alphaValue = 0
             } completionHandler: { [weak self] in
-                Task { @MainActor in
+                Task { @MainActor [weak self] in
                     guard self?.isRevealed == false else { return }
                     panel.orderOut(nil)
                     panel.alphaValue = 1
