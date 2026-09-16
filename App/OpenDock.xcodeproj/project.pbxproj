@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -124,6 +124,7 @@
 				};
 			};
 			buildConfigurationList = B8A57472612802D979828506 /* Build configuration list for PBXProject "OpenDock" */;
+			compatibilityVersion = "Xcode 15.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -135,7 +136,6 @@
 			packageReferences = (
 				B427F91BFE66512057254F5A /* XCLocalSwiftPackageReference ".." */,
 			);
-			preferredProjectObjectVersion = 77;
 			productRefGroup = 3A327E2E5E7E4F5A99D6F33B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
